@@ -1,5 +1,4 @@
 defmodule Servy.Handler do
-
   def handler(request) do
     request
     |> parse()
@@ -11,7 +10,7 @@ defmodule Servy.Handler do
   end
 
   def track(%{status: 404, path: path} = conv) do
-    IO.puts "Warning #{path} is on the loose!"
+    IO.puts("Warning #{path} is on the loose!")
     conv
   end
 
@@ -23,7 +22,7 @@ defmodule Servy.Handler do
 
   def rewrite_path(conv), do: conv
 
-  def log(conv), do: IO.inspect conv
+  def log(conv), do: IO.inspect(conv)
 
   def parse(request) do
     [method, path, _] =
@@ -52,9 +51,45 @@ defmodule Servy.Handler do
     %{conv | status: 200, body: "Bear #{id}"}
   end
 
+  def route(%{method: "GET", path: "/about"} = conv) do
+    Path.expand("../../pages", __DIR__)
+    |> Path.join("about.html")
+    |> File.read()
+    |> handler_file(conv)
+  end
+
   def route(%{path: path} = conv) do
     %{conv | status: 404, body: "No #{path} here!"}
   end
+
+  def handler_file({:ok, content}, conv) do
+    %{conv | status: 200, body: content}
+  end
+
+  def handler_file({:error, :enoent}, conv) do
+    %{conv | status: 404, body: "File not found!"}
+  end
+
+  def handler_file({:error, reason}, conv) do
+    %{conv | status: 500, body: "File error: #{reason}"}
+  end
+
+  # def route(%{method: "GET", path: "/about"} = conv) do
+  #   file =
+  #     Path.expand("../../pages", __DIR__)
+  #     |> Path.join("about.html")
+
+  #   case File.read(file) do
+  #     {:ok, content} ->
+  #       %{conv | status: 200, body: content}
+
+  #     {:error, :enoent} ->
+  #       %{conv | status: 404, body: "File not found!"}
+
+  #     {:error, reason} ->
+  #       %{conv | status: 500, body: "File error: #{reason}"}
+  #   end
+  # end
 
   def create_response(conv) do
     """
@@ -76,7 +111,6 @@ defmodule Servy.Handler do
       500 => "Internal Server Error"
     }[code]
   end
-
 end
 
 request = """
@@ -87,7 +121,7 @@ Accept: */*
 
 """
 
-IO.puts Servy.Handler.handler(request)
+IO.puts(Servy.Handler.handler(request))
 
 request = """
 GET /wildlife HTTP/1.1
@@ -97,7 +131,7 @@ Accept: */*
 
 """
 
-IO.puts Servy.Handler.handler(request)
+IO.puts(Servy.Handler.handler(request))
 
 request = """
 GET /bears HTTP/1.1
@@ -107,8 +141,7 @@ Accept: */*
 
 """
 
-IO.puts Servy.Handler.handler(request)
-
+IO.puts(Servy.Handler.handler(request))
 
 request = """
 GET /bears/1 HTTP/1.1
@@ -118,7 +151,7 @@ Accept: */*
 
 """
 
-IO.puts Servy.Handler.handler(request)
+IO.puts(Servy.Handler.handler(request))
 
 request = """
 GET /bigfoot HTTP/1.1
@@ -128,4 +161,14 @@ Accept: */*
 
 """
 
-IO.puts Servy.Handler.handler(request)
+IO.puts(Servy.Handler.handler(request))
+
+request = """
+GET /about HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+
+"""
+
+IO.puts(Servy.Handler.handler(request))
