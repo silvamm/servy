@@ -4,6 +4,8 @@ defmodule Servy.Handler do
   import Servy.Plugins, only: [rewrite_path: 1, log: 1, track: 1]
   import Servy.Parser, only: [parse: 1]
 
+  alias Servy.Conv
+
   @pages_path Path.expand("../../pages", __DIR__)
 
   @doc "Transforms the request into a response"
@@ -17,26 +19,26 @@ defmodule Servy.Handler do
     |> create_response()
   end
 
-  def route(%{method: "GET", path: "/wildthings"} = conv) do
+  def route(%Conv{method: "GET", path: "/wildthings"} = conv) do
     %{conv | status: 200, body: "Bear, Lions, Tigers"}
   end
 
-  def route(%{method: "GET", path: "/bears"} = conv) do
+  def route(%Conv{method: "GET", path: "/bears"} = conv) do
     %{conv | status: 200, body: "Teddy, Smokey, Paddington"}
   end
 
-  def route(%{method: "GET", path: "/bears" <> id} = conv) do
+  def route(%Conv{method: "GET", path: "/bears" <> id} = conv) do
     %{conv | status: 200, body: "Bear #{id}"}
   end
 
-  def route(%{method: "GET", path: "/about"} = conv) do
+  def route(%Conv{method: "GET", path: "/about"} = conv) do
     @pages_path
     |> Path.join("about.html")
     |> File.read()
     |> handler_file(conv)
   end
 
-  def route(%{path: path} = conv) do
+  def route(%Conv{path: path} = conv) do
     %{conv | status: 404, body: "No #{path} here!"}
   end
 
@@ -69,9 +71,9 @@ defmodule Servy.Handler do
   #   end
   # end
 
-  def create_response(conv) do
+  def create_response(%Conv{} = conv) do
     """
-    HTTP/1.1 #{conv.status} #{status_reason(conv.status)}
+    HTTP/1.1 #{Conv.full_status(conv)}
     Content-type: text/html
     Content-length: #{String.length(conv.body)}
 
@@ -79,16 +81,7 @@ defmodule Servy.Handler do
     """
   end
 
-  defp status_reason(code) do
-    %{
-      200 => "OK",
-      201 => "Created",
-      401 => "Unauthorized",
-      403 => "Forbidden",
-      404 => "Not Found",
-      500 => "Internal Server Error"
-    }[code]
-  end
+
 end
 
 request = """
