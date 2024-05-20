@@ -11,12 +11,12 @@ defmodule Servy.Handler do
   @doc "Transforms the request into a response"
   def handler(request) do
     request
-    |> parse()
-    |> rewrite_path()
-    |> log()
-    |> route()
-    |> track()
-    |> create_response()
+    |> parse
+    |> rewrite_path
+    |> log
+    |> route
+    |> track
+    |> create_response
   end
 
   def route(%Conv{method: "GET", path: "/wildthings"} = conv) do
@@ -29,6 +29,10 @@ defmodule Servy.Handler do
 
   def route(%Conv{method: "GET", path: "/bears" <> id} = conv) do
     %{conv | status: 200, body: "Bear #{id}"}
+  end
+
+  def route(%Conv{method: "POST", path: "/bears"} = conv) do
+    %{conv | status: 201, body: "Create a #{conv.params["type"]} bear named #{conv.params["name"]}!"}
   end
 
   def route(%Conv{method: "GET", path: "/about"} = conv) do
@@ -140,6 +144,19 @@ Host: example.com
 User-Agent: ExampleBrowser/1.0
 Accept: */*
 
+"""
+
+IO.puts(Servy.Handler.handler(request))
+
+request = """
+POST /bears HTTP/1.1
+Host: example.com
+User-Agent: ExampleBrowser/1.0
+Accept: */*
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 21
+
+name=Baloo&type=Brown
 """
 
 IO.puts(Servy.Handler.handler(request))
