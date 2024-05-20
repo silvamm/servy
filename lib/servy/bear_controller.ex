@@ -22,7 +22,7 @@ defmodule Servy.BearController do
     %{conv | status: 200, body: "<h1>Bear #{bear.id}: #{bear.name}</h1>"}
   end
 
-  def create(conv, %{"name" => name, "type" => type} = params) do
+  def create(conv, %{"name" => name, "type" => type} = _params) do
     %{conv | status: 201, body: "Create a #{type} bear named #{name}!"}
   end
 end
