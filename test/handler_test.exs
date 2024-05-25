@@ -17,7 +17,7 @@ defmodule HandlerTest do
     assert _response = """
     HTTP/ 1.1 200 OK\r
     Content-Type: text/html\r
-    Content-length: 32\r
+    Content-Length: 32\r
     \r
     Bear, Lions, Tigers
     """
@@ -36,8 +36,8 @@ defmodule HandlerTest do
 
     assert _response = """
     HTTP/ 1.1 200 OK\r
-    Content-type: text/html\r
-    Content-length: 314\r
+    Content-Type: text/html\r
+    Content-Length: 314\r
     \r
     <h1>All the Bears!</h1>
 
@@ -69,8 +69,8 @@ defmodule HandlerTest do
 
     assert _response = """
     HTTP/1.1 404 Not Found\r
-    Content-type: text/html\r
-    Content-length: 17\r
+    Content-Type: text/html\r
+    Content-Length: 17\r
     \r
     No /bigfoot here!
     """
@@ -89,8 +89,8 @@ defmodule HandlerTest do
 
     assert _response = """
     HTTP/1.1 200 OK\r
-    Content-type: text/html\r
-    Content-length: 19\r
+    Content-Type: text/html\r
+    Content-Length: 19\r
     \r
     Bear, Lions, Tigers
     """
@@ -109,8 +109,8 @@ defmodule HandlerTest do
 
     assert response == """
     HTTP/1.1 200 OK\r
-    Content-type: text/html\r
-    Content-length: 73\r
+    Content-Type: text/html\r
+    Content-Length: 73\r
     \r
     <h1>Show Bear<!/h1>\r
     <p>\r
@@ -131,15 +131,45 @@ defmodule HandlerTest do
     name=Baloo&type=Brown
     """
 
-    response = handle(request)
+    _response = handle(request)
 
-    assert response = """
+    assert _response = """
     HTTP/1.1 201 Created\r
-    Content-type: text/html\r
-    Content-length: 32\r
+    Content-Type: text/html\r
+    Content-Length: 32\r
     \r
     Create a Brown bear named Baloo!
     """
 
+  end
+
+  test "GET /api/bears" do
+    request = """
+    GET /api/bears HTTP/1.1\r
+    Host: example.com\r
+    User-Agent: ExampleBrowser/1.0\r
+    Accept: */*\r
+    \r
+    """
+
+    _response = handle(request)
+
+    assert _response == """
+    HTTP/1.1 200 OK\r
+    Content-Type: application/json\r
+    Content-Length: 605\r
+    \r
+    [{\"hibernating\":true,\"type\":\"Brown\",\"name\":\"Teddy\",\"id\":1},\
+    {\"hibernating\":false,\"type\":\"Black\",\"name\":\"Smokey\",\"id\":2},\
+    {\"hibernating\":false,\"type\":\"Brown\",\"name\":\"Paddington\",\"id\":3},\
+    {\"hibernating\":true,\"type\":\"Grizzly\",\"name\":\"Scarface\",\"id\":4},\
+    {\"hibernating\":false,\"type\":\"Polar\",\"name\":\"Snow\",\"id\":5},\
+    {\"hibernating\":false,\"type\":\"Grizzly\",\"name\":\"Brutus\",\"id\":6},\
+    {\"hibernating\":true,\"type\":\"Black\",\"name\":\"Rosie\",\"id\":7},\
+    {\"hibernating\":false,\"type\":\"Panda\",\"name\":\"Roscoe\",\"id\":8},\
+    {\"hibernating\":true,\"type\":\"Polar\",\"name\":\"Iceman\",\"id\":9},\
+    {\"hibernating\":false,\"type\":\"Grizzly\",\"name\":\"Kenai\",\"id\":10}]\
+    \r
+    """
   end
 end

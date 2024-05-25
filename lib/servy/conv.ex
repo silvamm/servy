@@ -2,6 +2,7 @@ defmodule Servy.Conv do
   defstruct method: "",
             path: "",
             params: %{},
+            resp_content_type: "text/html",
             body: "",
             status: nil
 
