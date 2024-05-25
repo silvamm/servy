@@ -10,7 +10,7 @@ defmodule Servy.Handler do
   @pages_path Path.expand("../../pages", __DIR__)
 
   @doc "Transforms the request into a response"
-  def handler(request) do
+  def handle(request) do
     request
     |> parse
     |> rewrite_path
@@ -89,76 +89,3 @@ defmodule Servy.Handler do
 
 
 end
-
-request = """
-GET /wildthings HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
-IO.puts(Servy.Handler.handler(request))
-
-request = """
-GET /wildlife HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
-IO.puts(Servy.Handler.handler(request))
-
-request = """
-GET /bears HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
-IO.puts(Servy.Handler.handler(request))
-
-request = """
-GET /bears/1 HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
-IO.puts(Servy.Handler.handler(request))
-
-request = """
-GET /bigfoot HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
-IO.puts(Servy.Handler.handler(request))
-
-request = """
-GET /about HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-
-"""
-
-IO.puts(Servy.Handler.handler(request))
-
-request = """
-POST /bears HTTP/1.1
-Host: example.com
-User-Agent: ExampleBrowser/1.0
-Accept: */*
-Content-Type: application/x-www-form-urlencoded
-Content-Length: 21
-
-name=Baloo&type=Brown
-"""
-
-IO.puts(Servy.Handler.handler(request))

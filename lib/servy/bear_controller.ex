@@ -4,7 +4,7 @@ defmodule Servy.BearController do
 
   @templates_path Path.expand("../../templates", __DIR__)
 
-  defp render(conv, template, bindings \\ []) do
+  defp render(conv, template, bindings) do
     content =
       @templates_path
       |> Path.join(template)
