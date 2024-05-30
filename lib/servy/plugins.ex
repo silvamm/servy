@@ -8,7 +8,11 @@ defmodule Servy.Plugins do
     conv
   end
 
-  def track(conv), do: conv
+  def track(conv) do
+    IO.puts("-> Track\n")
+    IO.inspect(conv)
+    conv
+  end
 
   def rewrite_path(%{path: "/wildlife"} = conv) do
     %{conv | path: "/wildthings"}
@@ -21,6 +25,10 @@ defmodule Servy.Plugins do
       IO.inspect(conv)
     end
     conv
+  end
+
+  def replace_with_single_space(binary) when is_binary(binary) do
+    String.replace(binary, ~r/\s+/, " ")
   end
 
 end

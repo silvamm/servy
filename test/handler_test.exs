@@ -110,12 +110,9 @@ defmodule HandlerTest do
     assert response == """
     HTTP/1.1 200 OK\r
     Content-Type: text/html\r
-    Content-Length: 73\r
+    Content-Length: 71\r
     \r
-    <h1>Show Bear<!/h1>\r
-    <p>\r
-    Is Teddy hibernating? <strong>true</strong>\r
-    </p>\r\n\r
+    <h1>Show Bear<!/h1> <p>Is Teddy hibernating? <strong>true</strong></p> \r
     """
   end
 

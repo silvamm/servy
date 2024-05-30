@@ -2,6 +2,8 @@ defmodule Servy.BearController do
   alias Servy.Wildthings
   alias Servy.Bear
 
+  import Servy.Plugins, only: [replace_with_single_space: 1]
+
   @templates_path Path.expand("../../templates", __DIR__)
 
   defp render(conv, template, bindings) do
@@ -9,6 +11,7 @@ defmodule Servy.BearController do
       @templates_path
       |> Path.join(template)
       |> EEx.eval_file(bindings)
+      |> replace_with_single_space
 
     %{conv | status: 200, body: content}
   end
